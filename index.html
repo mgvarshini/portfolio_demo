@@ -1,0 +1,661 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Marboina Golla Varshini Portfolio — Upgraded</title>
+
+    <!-- Chart.js for skill dashboard -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <style>
+        :root {
+            /* Base (Night / Neo Tech) */
+            --bg1: #0a0a0a;
+            --bg2: #1a1a2e;
+            --bg3: #0f3460;
+            --accent1: #00ff87;
+            --accent2: #60efff;
+            --text: #ffffff;
+            --muted: #aaaaaa;
+            --card: rgba(255, 255, 255, 0.05);
+        }
+
+        /* DAY THEME */
+        body.theme-day {
+            --bg1: #f7fafc;
+            --bg2: #e6f6ff;
+            --bg3: #d8ffe7;
+            --text: #0a0a0a;
+            --muted: #4a5568;
+            --card: rgba(0, 0, 0, 0.04);
+        }
+
+        /* OCEAN THEME */
+        body.theme-ocean {
+            --bg1: #021b2b;
+            --bg2: #023047;
+            --bg3: #006d77;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: var(--bg1);
+            color: var(--text);
+            overflow-x: hidden;
+        }
+
+        .bg-animation {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1;
+            background: linear-gradient(45deg, var(--bg3), var(--bg2), var(--bg1));
+            background-size: 400% 400%;
+            animation: gradientShift 15s ease infinite;
+        }
+        @keyframes gradientShift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        .sidebar {
+            position: fixed; left: 0; top: 0; width: 280px; height: 100vh;
+            background: rgba(15, 15, 35, 0.95); backdrop-filter: blur(10px);
+            border-right: 2px solid rgba(0, 255, 135, 0.3);
+            padding: 40px 20px; z-index: 100; overflow-y: auto;
+        }
+        body.theme-day .sidebar { background: rgba(255,255,255,0.8); border-right-color: rgba(0,0,0,0.1); }
+
+        .profile-section { text-align: center; margin-bottom: 40px; padding-bottom: 30px; border-bottom: 2px solid rgba(0, 255, 135, 0.2); }
+        body.theme-day .profile-section { border-bottom-color: rgba(0,0,0,0.08); }
+
+        .profile-img {
+            width: 120px; height: 120px; border-radius: 50%;
+            background: linear-gradient(135deg, var(--accent1), var(--accent2));
+            margin: 0 auto 20px; border: 3px solid rgba(0, 255, 135, 0.5);
+            box-shadow: 0 0 30px rgba(0, 255, 135, 0.4);
+            animation: pulse 2s ease-in-out infinite;
+        }
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); box-shadow: 0 0 30px rgba(0, 255, 135, 0.4); }
+            50% { transform: scale(1.05); box-shadow: 0 0 50px rgba(0, 255, 135, 0.6); }
+        }
+        .profile-section h2 {
+            font-size: 20px; margin-bottom: 5px;
+            background: linear-gradient(to right, var(--accent1), var(--accent2));
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+        }
+        .student-id { font-size: 12px; color: #888; letter-spacing: 1px; }
+
+        .nav-menu { list-style: none; }
+        .nav-item { margin-bottom: 15px; }
+        .nav-link {
+            display: flex; align-items: center; padding: 15px 20px; color: var(--text); text-decoration: none;
+            border-radius: 10px; transition: all 0.3s; background: var(--card); position: relative; overflow: hidden;
+        }
+        .nav-link::before { content: ''; position: absolute; left: 0; top: 0; width: 4px; height: 100%; background: linear-gradient(to bottom, var(--accent1), var(--accent2)); transform: scaleY(0); transition: transform 0.3s; }
+        .nav-link:hover { background: rgba(0, 255, 135, 0.1); transform: translateX(10px); }
+        .nav-link:hover::before { transform: scaleY(1); }
+        .nav-link.active { background: rgba(0, 255, 135, 0.15); border-left: 4px solid var(--accent1); }
+        .nav-icon { width: 24px; height: 24px; margin-right: 15px; font-size: 20px; }
+
+        .main-content { margin-left: 280px; padding: 60px; min-height: 100vh; }
+        .content-section { display: none; animation: fadeIn 0.6s ease; }
+        .content-section.active { display: block; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(30px);} to { opacity: 1; transform: translateY(0);} }
+
+        .page-title { font-size: 48px; margin-bottom: 20px; background: linear-gradient(to right, var(--accent1), var(--accent2)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; animation: slideInLeft 0.6s ease; }
+        @keyframes slideInLeft { from { opacity: 0; transform: translateX(-50px);} to { opacity: 1; transform: translateX(0);} }
+        .subtitle { font-size: 20px; color: #888; margin-bottom: 40px; }
+
+        .activity-card { background: var(--card); backdrop-filter: blur(10px); border: 1px solid rgba(0, 255, 135, 0.2); border-radius: 20px; padding: 40px; margin-bottom: 40px; transition: all 0.3s; }
+        .activity-card:hover { transform: translateY(-5px); box-shadow: 0 10px 40px rgba(0, 255, 135, 0.2); border-color: rgba(0, 255, 135, 0.4); }
+        .activity-title { font-size: 28px; color: var(--accent1); margin-bottom: 25px; display: flex; align-items: center; }
+        .activity-number { width: 40px; height: 40px; background: linear-gradient(135deg, var(--accent1), var(--accent2)); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-right: 15px; color: #0a0a0a; font-weight: bold; }
+
+        .diagram-container { background: rgba(10, 10, 30, 0.6); border-radius: 15px; padding: 30px; margin: 30px 0; border: 2px dashed rgba(0, 255, 135, 0.3); }
+        body.theme-day .diagram-container { background: rgba(255,255,255,0.6); border-color: rgba(0,0,0,0.08); }
+        .diagram-title { font-size: 20px; color: var(--accent2); margin-bottom: 20px; text-align: center; }
+        .block-diagram { display: flex; flex-direction: column; align-items: center; gap: 20px; }
+        .block { background: linear-gradient(135deg, rgba(0, 255, 135, 0.2), rgba(96, 239, 255, 0.2)); padding: 20px 40px; border-radius: 10px; border: 2px solid rgba(0, 255, 135, 0.4); text-align: center; font-weight: 600; min-width: 250px; transition: all 0.3s; }
+        .block:hover { transform: scale(1.05); box-shadow: 0 5px 20px rgba(0, 255, 135, 0.4); }
+        .arrow { width: 0; height: 0; border-left: 15px solid transparent; border-right: 15px solid transparent; border-top: 25px solid var(--accent1); opacity: 0.7; }
+
+        .explanation { background: rgba(255, 255, 255, 0.03); padding: 30px; border-radius: 15px; border-left: 4px solid var(--accent1); line-height: 1.8; font-size: 16px; color: #ccc; }
+        body.theme-day .explanation { color: #2d3748; background: rgba(0,0,0,0.03); border-left-color: #2b6cb0; }
+        .explanation h3 { color: var(--accent1); margin-bottom: 15px; font-size: 22px; }
+
+        .specs-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; margin: 30px 0; }
+        .spec-item { background: rgba(0, 255, 135, 0.1); padding: 20px; border-radius: 10px; border: 1px solid rgba(0, 255, 135, 0.3); text-align: center; }
+        .spec-label { color: var(--accent2); font-size: 14px; margin-bottom: 5px; }
+        .spec-value { font-size: 20px; font-weight: bold; color: var(--accent1); }
+
+        .home-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 30px; margin-top: 40px; }
+        .home-card { background: var(--card); backdrop-filter: blur(10px); border: 1px solid rgba(0, 255, 135, 0.2); border-radius: 20px; padding: 30px; text-align: center; transition: all 0.3s; cursor: pointer; }
+        .home-card:hover { transform: translateY(-10px); box-shadow: 0 15px 40px rgba(0, 255, 135, 0.3); border-color: rgba(0, 255, 135, 0.5); }
+        .home-card-icon { font-size: 48px; margin-bottom: 20px; }
+        .home-card h3 { color: var(--accent1); font-size: 24px; margin-bottom: 15px; }
+        .home-card p { color: #888; line-height: 1.6; }
+
+        @media (max-width: 1024px) {
+            .sidebar { width: 220px; }
+            .main-content { margin-left: 220px; padding: 40px; }
+        }
+        @media (max-width: 768px) {
+            .sidebar { width: 100%; height: auto; position: relative; border-right: none; border-bottom: 2px solid rgba(0, 255, 135, 0.3); }
+            .main-content { margin-left: 0; padding: 30px 20px; }
+            .page-title { font-size: 32px; }
+        }
+
+        /* ===== THEME SWITCHER BUTTON ===== */
+        .theme-switcher {
+            position: fixed; right: 20px; top: 20px; z-index: 200; display: flex; gap: 8px; align-items: center;
+            background: var(--card); border: 1px solid rgba(255,255,255,0.1); padding: 10px 14px; border-radius: 999px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+        .theme-switcher select, .theme-switcher button {
+            background: transparent; border: none; color: var(--text); cursor: pointer; font-weight: 600;
+        }
+        .theme-switcher button { padding: 6px 10px; border-radius: 999px; }
+
+        /* ===== AI CHAT WIDGET ===== */
+        .chat-toggle {
+            position: fixed; right: 24px; bottom: 24px; width: 56px; height: 56px;
+            border-radius: 50%; border: none; cursor: pointer; z-index: 300;
+            background: linear-gradient(135deg, var(--accent1), var(--accent2));
+            box-shadow: 0 8px 30px rgba(0,0,0,0.35);
+            font-size: 24px;
+        }
+        .chat-box {
+            position: fixed; right: 24px; bottom: 92px; width: 340px; max-height: 60vh; display: none; flex-direction: column;
+            background: var(--card); border: 1px solid rgba(255,255,255,0.1); border-radius: 16px; overflow: hidden; z-index: 300;
+            box-shadow: 0 12px 40px rgba(0,0,0,0.45);
+        }
+        .chat-header { padding: 12px 14px; background: rgba(0,0,0,0.2); font-weight: 700; display: flex; align-items: center; justify-content: space-between; }
+        .chat-messages { padding: 12px; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; }
+        .msg { padding: 10px 12px; border-radius: 12px; max-width: 85%; line-height: 1.4; }
+        .msg.user { align-self: flex-end; background: rgba(0, 255, 135, 0.2); border: 1px solid rgba(0, 255, 135, 0.4); }
+        .msg.bot { align-self: flex-start; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.12); }
+        .chat-input { display: flex; gap: 8px; border-top: 1px solid rgba(255,255,255,0.08); padding: 10px; }
+        .chat-input input { flex: 1; background: transparent; border: 1px solid rgba(255,255,255,0.15); padding: 10px 12px; border-radius: 10px; color: var(--text); }
+        .chat-input button { background: linear-gradient(135deg, var(--accent1), var(--accent2)); border: none; padding: 10px 14px; border-radius: 10px; cursor: pointer; font-weight: 700; }
+        .quick-qs { display: flex; gap: 8px; flex-wrap: wrap; padding: 8px 12px; border-top: 1px solid rgba(255,255,255,0.08); }
+        .quick-qs button { background: rgba(0,0,0,0.2); border: 1px solid rgba(255,255,255,0.12); padding: 6px 10px; border-radius: 999px; color: var(--text); cursor: pointer; font-size: 12px; }
+
+        /* Skills cards */
+        .skill-cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 16px; margin-top: 20px; }
+        .skill-card { background: var(--card); padding: 16px; border-radius: 14px; border: 1px solid rgba(255,255,255,0.1); }
+        .skill-card h4 { color: var(--accent1); margin-bottom: 6px; }
+    </style>
+</head>
+<body>
+    <div class="bg-animation"></div>
+
+    <!-- Theme Switcher -->
+    <div class="theme-switcher">
+        <span>Theme:</span>
+        <select id="themeSelect" aria-label="Theme select">
+            <option value="auto">Auto</option>
+            <option value="day">Day</option>
+            <option value="night">Night</option>
+            <option value="ocean">Ocean</option>
+        </select>
+        <button id="saveTheme">💾</button>
+    </div>
+
+    <nav class="sidebar">
+        <div class="profile-section">
+            <div class="profile-img"></div>
+            <h2>Marboina Golla Varshini</h2>
+            <p class="student-id">RA2311028010057</p>
+        </div>
+        <ul class="nav-menu">
+            <li class="nav-item">
+                <a href="#home" class="nav-link active" onclick="showSection('home', event)">
+                    <span class="nav-icon">🏠</span>
+                    <span>Home</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="#activity1" class="nav-link" onclick="showSection('activity1', event)">
+                    <span class="nav-icon">🌊</span>
+                    <span>Activity 1: Wave Energy</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="#activity2" class="nav-link" onclick="showSection('activity2', event)">
+                    <span class="nav-icon">🌱</span>
+                    <span>Activity 2: Biomass Biogas</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="#activity3" class="nav-link" onclick="showSection('activity3', event)">
+                    <span class="nav-icon">🌋</span>
+                    <span>Activity 3: Geothermal Power</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="#skills" class="nav-link" onclick="showSection('skills', event)">
+                    <span class="nav-icon">📊</span>
+                    <span>Skills Dashboard</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+
+    <main class="main-content">
+        <!-- Home Section -->
+        <section id="home" class="content-section active">
+            <h1 class="page-title">Marboina Golla Varshini Portfolio</h1>
+            <p class="subtitle">Renewable Energy Systems</p>
+
+            <div class="home-grid">
+                <div class="home-card" onclick="showSection('activity1')">
+                    <div class="home-card-icon">🌊</div>
+                    <h3>Wave Energy System</h3>
+                    <p>Integrated coastal desalination plant with wave energy conversion for sustainable freshwater production</p>
+                </div>
+                <div class="home-card" onclick="showSection('activity2')">
+                    <div class="home-card-icon">🌱</div>
+                    <h3>Biomass Biogas</h3>
+                    <p>Dairy farm biogas generation system handling 100 cattle for renewable energy production</p>
+                </div>
+                <div class="home-card" onclick="showSection('activity3')">
+                    <div class="home-card-icon">🌋</div>
+                    <h3>Geothermal Power</h3>
+                    <p>Geothermal electricity generation system utilizing hot water wells for sustainable power</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Activity 1: Wave Energy -->
+        <section id="activity1" class="content-section">
+            <h1 class="page-title">Activity 1: Wave Energy Conversion</h1>
+            <p class="subtitle">Coastal Desalination Plant Integration</p>
+
+            <div class="activity-card">
+                <h2 class="activity-title">
+                    <span class="activity-number">1</span>
+                    Wave Energy Conversion System for Desalination
+                </h2>
+
+                <div class="specs-grid">
+                    <div class="spec-item">
+                        <div class="spec-label">Energy Source</div>
+                        <div class="spec-value">Ocean Waves</div>
+                    </div>
+                    <div class="spec-item">
+                        <div class="spec-label">Primary Application</div>
+                        <div class="spec-value">Desalination</div>
+                    </div>
+                    <div class="spec-item">
+                        <div class="spec-label">Output Type</div>
+                        <div class="spec-value">Electricity + Water</div>
+                    </div>
+                    <div class="spec-item">
+                        <div class="spec-label">Location</div>
+                        <div class="spec-value">Coastal</div>
+                    </div>
+                </div>
+
+                <div class="diagram-container">
+                    <h3 class="diagram-title">System Block Diagram</h3>
+                    <div class="block-diagram">
+                        <div class="block">Ocean Wave Motion<br>(Kinetic Energy Source)</div>
+                        <div class="arrow"></div>
+                        <div class="block">Wave Energy Converter (WEC)<br>Point Absorber / Oscillating Water Column</div>
+                        <div class="arrow"></div>
+                        <div class="block">Hydraulic System<br>Pressure Accumulation</div>
+                        <div class="arrow"></div>
+                        <div class="block">Electric Generator<br>Hydraulic Motor + Alternator</div>
+                        <div class="arrow"></div>
+                        <div class="block">Power Conditioning Unit<br>AC/DC Converter & Grid Integration</div>
+                        <div class="arrow"></div>
+                        <div class="block">Reverse Osmosis Desalination Unit<br>High-Pressure Pumps Powered by WEC</div>
+                        <div class="arrow"></div>
+                        <div class="block">Fresh Water Storage<br>& Distribution System</div>
+                    </div>
+                </div>
+
+                <div class="explanation">
+                    <h3>System Explanation</h3>
+                    <p><strong>Energy Source:</strong> The system harnesses kinetic energy from ocean waves, which are created by wind patterns and tidal forces. Coastal regions experience consistent wave activity, making them ideal for this renewable energy technology.</p>
+                    <p><strong>Conversion Process:</strong> Wave Energy Converters (WECs) capture the oscillating motion of waves using point absorber buoys or oscillating water columns. The mechanical motion drives hydraulic pumps that pressurize fluid, which then powers hydraulic motors connected to electric generators. The generated electricity is conditioned and used to operate high-pressure pumps in the reverse osmosis desalination unit, directly converting wave energy into freshwater production.</p>
+                    <p><strong>Output & Utilization:</strong> The dual-output system produces both electricity for coastal grid supply and desalinated freshwater for community consumption. The integration eliminates the need for external power sources, making the desalination process entirely sustainable and carbon-neutral.</p>
+                    <p><strong>Real-world Application:</strong> This system is particularly valuable for water-scarce coastal communities and island nations. It addresses both energy security and water scarcity simultaneously, reducing dependence on fossil fuel-powered desalination plants while leveraging abundant ocean resources for sustainable development.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Activity 2: Biomass Biogas -->
+        <section id="activity2" class="content-section">
+            <h1 class="page-title">Activity 2: Biomass Biogas System</h1>
+            <p class="subtitle">Dairy Farm Waste-to-Energy Solution</p>
+
+            <div class="activity-card">
+                <h2 class="activity-title">
+                    <span class="activity-number">2</span>
+                    Biogas Generation System for 100-Cattle Dairy Farm
+                </h2>
+
+                <div class="specs-grid">
+                    <div class="spec-item">
+                        <div class="spec-label">Energy Source</div>
+                        <div class="spec-value">Cattle Waste</div>
+                    </div>
+                    <div class="spec-item">
+                        <div class="spec-label">Daily Input</div>
+                        <div class="spec-value">~1500 kg</div>
+                    </div>
+                    <div class="spec-item">
+                        <div class="spec-label">Biogas Output</div>
+                        <div class="spec-value">60-70 m³/day</div>
+                    </div>
+                    <div class="spec-item">
+                        <div class="spec-label">Digester Type</div>
+                        <div class="spec-value">Fixed Dome</div>
+                    </div>
+                </div>
+
+                <div class="diagram-container">
+                    <h3 class="diagram-title">System Block Diagram</h3>
+                    <div class="block-diagram">
+                        <div class="block">Cattle Dung Collection<br>(~15 kg/cattle/day = 1500 kg total)</div>
+                        <div class="arrow"></div>
+                        <div class="block">Mixing Tank<br>Dung + Water (1:1 ratio)</div>
+                        <div class="arrow"></div>
+                        <div class="block">Anaerobic Digester<br>Fixed Dome / Floating Drum Type<br>Retention Time: 30-40 days</div>
+                        <div class="arrow"></div>
+                        <div class="block">Biogas Production<br>CH₄ (55-65%), CO₂ (35-45%)</div>
+                        <div class="arrow"></div>
+                        <div class="block">Gas Purification Unit<br>H₂S & Moisture Removal</div>
+                        <div class="arrow"></div>
+                        <div class="block">Storage Tank<br>Compressed Biogas Storage</div>
+                        <div class="arrow"></div>
+                        <div class="block">Utilization<br>Cooking Fuel / Generator / Heating</div>
+                        <div class="arrow"></div>
+                        <div class="block">Digestate Output<br>Organic Fertilizer for Agriculture</div>
+                    </div>
+                </div>
+
+                <div class="explanation">
+                    <h3>System Explanation</h3>
+                    <p><strong>Energy Source:</strong> The primary feedstock is cattle manure from 100 dairy cows, producing approximately 1500 kg of dung daily. This organic waste contains biodegradable matter rich in carbohydrates, proteins, and lipids that can be converted into biogas through anaerobic digestion.</p>
+                    <p><strong>Conversion Process:</strong> Collected dung is mixed with water in a 1:1 ratio and fed into an anaerobic digester, where methanogenic bacteria break down organic matter in the absence of oxygen. The process occurs in three stages: hydrolysis, acidogenesis, and methanogenesis. Over 30-40 days of retention time, the microorganisms produce biogas containing 55-65% methane and 35-45% carbon dioxide. The gas is then purified to remove hydrogen sulfide and moisture before storage.</p>
+                    <p><strong>Output & Utilization:</strong> The system generates 60-70 cubic meters of biogas daily, equivalent to 35-40 liters of diesel fuel. This biogas can power cooking appliances, electricity generators for farm operations, or heating systems. Additionally, the digestate (leftover slurry) serves as high-quality organic fertilizer, creating a circular economy within the farm.</p>
+                    <p><strong>Real-world Application:</strong> This system transforms a waste management challenge into an energy opportunity for dairy farms. It reduces methane emissions from open manure storage, provides energy independence, lowers operational costs, and produces organic fertilizer, making dairy farming more sustainable and profitable while contributing to rural electrification and energy security.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Activity 3: Geothermal -->
+        <section id="activity3" class="content-section">
+            <h1 class="page-title">Activity 3: Geothermal Power System</h1>
+            <p class="subtitle">Hot Water Well Electricity Generation</p>
+
+            <div class="activity-card">
+                <h2 class="activity-title">
+                    <span class="activity-number">3</span>
+                    Geothermal Power Plant for Electricity Generation
+                </h2>
+
+                <div class="specs-grid">
+                    <div class="spec-item">
+                        <div class="spec-label">Energy Source</div>
+                        <div class="spec-value">Geothermal</div>
+                    </div>
+                    <div class="spec-item">
+                        <div class="spec-label">Temperature</div>
+                        <div class="spec-value">150-200°C</div>
+                    </div>
+                    <div class="spec-item">
+                        <div class="spec-label">Plant Type</div>
+                        <div class="spec-value">Binary Cycle</div>
+                    </div>
+                    <div class="spec-item">
+                        <div class="spec-label">Capacity</div>
+                        <div class="spec-value">1-5 MW</div>
+                    </div>
+                </div>
+
+                <div class="diagram-container">
+                    <h3 class="diagram-title">System Block Diagram</h3>
+                    <div class="block-diagram">
+                        <div class="block">Geothermal Reservoir<br>Hot Water Wells (150-200°C)</div>
+                        <div class="arrow"></div>
+                        <div class="block">Production Well<br>Hot Water Extraction Pumps</div>
+                        <div class="arrow"></div>
+                        <div class="block">Heat Exchanger<br>Primary & Secondary Fluid Circuits</div>
+                        <div class="arrow"></div>
+                        <div class="block">Binary Fluid Vaporization<br>Low-Boiling Point Working Fluid<br>(Isobutane/Pentane)</div>
+                        <div class="arrow"></div>
+                        <div class="block">Turbine-Generator Unit<br>Mechanical to Electrical Energy</div>
+                        <div class="arrow"></div>
+                        <div class="block">Condenser<br>Binary Fluid Cooling & Recycling</div>
+                        <div class="arrow"></div>
+                        <div class="block">Cooling Tower<br>Waste Heat Dissipation</div>
+                        <div class="arrow"></div>
+                        <div class="block">Re-injection Well<br>Cooled Water Return to Reservoir</div>
+                        <div class="arrow"></div>
+                        <div class="block">Power Grid Connection<br>Step-up Transformer & Distribution</div>
+                    </div>
+                </div>
+
+                <div class="explanation">
+                    <h3>System Explanation</h3>
+                    <p><strong>Energy Source:</strong> The system utilizes naturally heated water from underground geothermal reservoirs at depths of 1-3 kilometers. These hot water wells, with temperatures ranging from 150-200°C, are created by Earth's internal heat from radioactive decay and residual formation heat. The consistent temperature makes geothermal energy reliable for baseload power generation.</p>
+                    <p><strong>Conversion Process:</strong> Hot geothermal water is extracted through production wells and pumped to the surface. A binary cycle system is employed where the hot water passes through a heat exchanger, transferring thermal energy to a secondary working fluid (typically isobutane or pentane) with a low boiling point. This working fluid vaporizes at the geothermal water's temperature, creating high-pressure vapor that drives a turbine connected to an electrical generator. After passing through the turbine, the vapor is condensed back to liquid in a condenser, completing the closed-loop cycle. The cooled geothermal water is re-injected into the reservoir to maintain pressure and sustainability.</p>
+                    <p><strong>Output & Utilization:</strong> The system generates 1-5 MW of continuous electricity with a capacity factor of 90-95%, significantly higher than solar or wind. The electricity is stepped up through transformers and fed into the regional power grid, providing reliable baseload power for communities.</p>
+                    <p><strong>Real-world Application:</strong> Geothermal power plants are ideal for regions with volcanic activity or tectonic plate boundaries where hot water wells are accessible. They provide carbon-free, 24/7 electricity generation with minimal land footprint. The technology is particularly valuable for remote areas near geothermal resources, reducing transmission losses and providing energy independence while contributing to climate change mitigation through clean electricity production.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Skills Dashboard -->
+        <section id="skills" class="content-section">
+            <h1 class="page-title">Skill Intelligence Dashboard</h1>
+            <p class="subtitle">A quick visual of my core strengths and recent learning focus</p>
+
+            <div class="activity-card">
+                <h2 class="activity-title">
+                    <span class="activity-number">📈</span>
+                    Skills Radar
+                </h2>
+                <canvas id="skillsChart" aria-label="Skills radar chart"></canvas>
+
+                <div class="skill-cards">
+                    <div class="skill-card">
+                        <h4>Frontend</h4>
+                        <p>HTML • CSS • JS • React (basics) • UI polish</p>
+                    </div>
+                    <div class="skill-card">
+                        <h4>Backend / DB</h4>
+                        <p>Node basics • SQL (DBMS project) • Firebase</p>
+                    </div>
+                    <div class="skill-card">
+                        <h4>AI/ML</h4>
+                        <p>Image Classification • CNN basics • EfficientNet (B4)</p>
+                    </div>
+                    <div class="skill-card">
+                        <h4>Cloud & Dev</h4>
+                        <p>AWS Lambda • Polly TTS • Git/GitHub</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- AI Chat Widget -->
+    <button class="chat-toggle" id="chatToggle" aria-label="Open chat">💬</button>
+    <div class="chat-box" id="chatBox" role="dialog" aria-label="AI chat assistant">
+        <div class="chat-header">
+            <span>Varshini AI Assistant</span>
+            <button onclick="toggleChat()" style="background:transparent;border:none;color:var(--text);cursor:pointer">✖</button>
+        </div>
+        <div class="chat-messages" id="chatMessages"></div>
+        <div class="quick-qs" id="quickQs">
+            <button data-q="Show projects">Projects</button>
+            <button data-q="What is Wave Energy project?">Wave Energy</button>
+            <button data-q="Tell me about Biogas">Biogas</button>
+            <button data-q="Geothermal power details">Geothermal</button>
+            <button data-q="Show your skills">Skills</button>
+        </div>
+        <div class="chat-input">
+            <input id="chatInput" placeholder="Type a question… (e.g., ‘Which tech did you use?’)" />
+            <button onclick="sendMessage()">Send</button>
+        </div>
+    </div>
+
+    <script>
+        // ==== SECTION NAVIGATION (patched to accept event) ====
+        function showSection(sectionId, evt) {
+            // Hide all sections
+            document.querySelectorAll('.content-section').forEach(s => s.classList.remove('active'));
+            // Remove active class from all nav links
+            document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
+            // Show selected section
+            document.getElementById(sectionId).classList.add('active');
+            // Add active class to clicked nav link if available
+            if (evt && evt.target) {
+                const link = evt.target.closest('.nav-link');
+                if (link) link.classList.add('active');
+            } else {
+                // Fallback: set active by hash
+                const current = document.querySelector(`a[href="#${sectionId}"]`);
+                if (current) current.classList.add('active');
+            }
+            // Update URL hash
+            window.location.hash = sectionId;
+        }
+
+        window.addEventListener('load', () => {
+            // Theme: apply previous or auto
+            applyStoredOrAutoTheme();
+            // Handle initial hash
+            const hash = window.location.hash.slice(1);
+            if (hash && document.getElementById(hash)) { showSection(hash); }
+            // Init chat greeting
+            addBot(`Hi! I can answer questions about my projects (Wave, Biogas, Geothermal) and skills. Try the quick buttons below!`);
+            // Init chart
+            initSkillsChart();
+        });
+
+        // ==== THEME SWITCHER ====
+        const themeSelect = document.getElementById('themeSelect');
+        const saveThemeBtn = document.getElementById('saveTheme');
+
+        function setTheme(mode) {
+            document.body.classList.remove('theme-day', 'theme-ocean');
+            if (mode === 'day') document.body.classList.add('theme-day');
+            if (mode === 'ocean') document.body.classList.add('theme-ocean');
+        }
+
+        function applyStoredOrAutoTheme() {
+            const stored = localStorage.getItem('theme-pref') || 'auto';
+            themeSelect.value = stored;
+            if (stored === 'auto') {
+                const hour = new Date().getHours();
+                if (hour >= 7 && hour < 18) setTheme('day'); else setTheme('night');
+            } else {
+                setTheme(stored);
+            }
+        }
+
+        themeSelect.addEventListener('change', (e) => {
+            const val = e.target.value;
+            if (val === 'auto') applyStoredOrAutoTheme(); else setTheme(val);
+        });
+        saveThemeBtn.addEventListener('click', () => {
+            localStorage.setItem('theme-pref', themeSelect.value);
+            addBot(`Saved theme as: <b>${themeSelect.value}</b>`);
+        });
+
+        // ==== AI CHAT (RULE-BASED MINI BOT) ====
+        const chatToggle = document.getElementById('chatToggle');
+        const chatBox = document.getElementById('chatBox');
+        const chatMessages = document.getElementById('chatMessages');
+        const chatInput = document.getElementById('chatInput');
+
+        function toggleChat() {
+            chatBox.style.display = chatBox.style.display === 'flex' ? 'none' : 'flex';
+            if (chatBox.style.display === 'flex') chatInput.focus();
+        }
+        chatToggle.addEventListener('click', toggleChat);
+
+        function addMsg(text, who = 'bot') {
+            const div = document.createElement('div');
+            div.className = `msg ${who}`;
+            div.innerHTML = text;
+            chatMessages.appendChild(div);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+        const addBot = (t) => addMsg(t, 'bot');
+        const addUser = (t) => addMsg(t, 'user');
+
+        const KB = [
+            { k: [/projects/i, /show projects/i], a: "I have three highlighted projects: 🌊 Wave Energy for desalination, 🌱 Biogas for a 100-cattle farm, and 🌋 Geothermal binary cycle power. Click the left navigation or say ‘Wave’, ‘Biogas’, or ‘Geothermal’." },
+            { k: [/wave|desalination|wec/i], a: "🌊 Wave Energy: WEC captures wave motion → hydraulic pressure → generator → powers reverse osmosis for freshwater. Great for coastal communities." },
+            { k: [/biogas|cattle|digester|anaerobic/i], a: "🌱 Biogas System: 100-cattle dung (~1500 kg/day) → anaerobic digester → 60–70 m³/day biogas → cooking/generator; digestate used as organic fertilizer." },
+            { k: [/geothermal|binary|isobutane|pentane/i], a: "🌋 Geothermal: Hot water (150–200°C) transfers heat to a low-boiling fluid (isobutane/pentane) → turbine → electricity; reinjection maintains reservoir." },
+            { k: [/skills?|dashboard|chart/i], a: "📊 Skills Dashboard shows strengths in Frontend, Backend/DB, AI/ML, and Cloud. Open the Skills section for a radar visualization." },
+            { k: [/contact|email|reach/i], a: "📬 You can reach me via GitHub/LinkedIn (add links in the sidebar) or email — happy to connect!" },
+            { k: [/theme|dark|light|ocean/i], a: "🎨 Use the Theme pill (top-right) to switch between Auto, Day, Night, and Ocean. Your choice is saved locally." },
+        ];
+
+        function reply(q) {
+            const hit = KB.find(r => r.k.some(rx => rx.test(q)));
+            return hit ? hit.a : "I didn't catch that yet — try asking about <b>Wave</b>, <b>Biogas</b>, <b>Geothermal</b>, <b>Skills</b>, or <b>Theme</b>.";
+        }
+
+        function sendMessage() {
+            const text = chatInput.value.trim();
+            if (!text) return;
+            addUser(text);
+            setTimeout(() => addBot(reply(text)), 200);
+            chatInput.value = '';
+        }
+        chatInput.addEventListener('keydown', (e) => { if (e.key === 'Enter') sendMessage(); });
+
+        // Quick questions
+        document.getElementById('quickQs').addEventListener('click', (e) => {
+            if (e.target.tagName.toLowerCase() === 'button') {
+                chatInput.value = e.target.dataset.q;
+                sendMessage();
+            }
+        });
+
+        // ==== SKILLS CHART (RADAR) ====
+        function initSkillsChart() {
+            const ctx = document.getElementById('skillsChart');
+            if (!ctx) return;
+            new Chart(ctx, {
+                type: 'radar',
+                data: {
+                    labels: ['HTML/CSS', 'JavaScript', 'React', 'SQL/DBMS', 'AI/CNN', 'Cloud/AWS'],
+                    datasets: [{
+                        label: 'Proficiency',
+                        data: [85, 75, 60, 65, 70, 55],
+                        fill: true,
+                        backgroundColor: 'rgba(0, 255, 135, 0.15)',
+                        borderColor: 'rgba(0, 255, 135, 0.8)',
+                        pointBackgroundColor: 'rgba(0, 255, 135, 1)'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    scales: {
+                        r: {
+                            angleLines: { color: 'rgba(255,255,255,0.15)' },
+                            grid: { color: 'rgba(255,255,255,0.12)' },
+                            pointLabels: { color: getComputedStyle(document.body).getPropertyValue('--text') },
+                            suggestedMin: 0, suggestedMax: 100
+                        }
+                    },
+                    plugins: { legend: { labels: { color: getComputedStyle(document.body).getPropertyValue('--text') } } }
+                }
+            });
+        }
+    </script>
+</body>
+</html>
